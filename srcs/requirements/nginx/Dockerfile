@@ -29,5 +29,8 @@ RUN chmod 755 /var/www/html
 # Donne le port 443 a écouter
 EXPOSE 443
 
+# Installation de dumb-init pour gerer les processus
+RUN apt-get install dumb-init -y
+
 # Execute nginx avec les variables globales (-g) et en arriere plan (daemon off)
 CMD ["nginx", "-g", "daemon off;"]

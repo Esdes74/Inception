@@ -16,6 +16,11 @@ COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 COPY tools/conf.sh /var/run/mysql
 RUN chmod +x /var/run/mysql/conf.sh
 
+# Donne le port 3306
 EXPOSE 3306
 
+# Installation de dumb-init pour gerer les processus
+RUN apt-get install dumb-init -y
 
+# Lancement du script de configuration de mariadb
+ENTRYPOINT ["/var/run/mysql/conf.sh"]
