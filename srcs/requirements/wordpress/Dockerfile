@@ -35,12 +35,16 @@ RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.ph
 RUN chmod +x wp-cli.phar
 RUN mv wp-cli.phar /usr/local/bin/wp
 
+# Creer le repertoire d'installation du wordpress
+RUN mkdir -p /var/www/html
+
 # Copie du script de configuration de wordpress
 RUN mkdir -p /var/run/wp
-COPY tools/wp_config.sh /var/run/wp
+COPY ./tools/wp_config.sh /var/run/wp
+RUN chmod +x /var/run/wp/wp_config.sh
 
 # Installation de dumb-init pour gerer les processus
 RUN apt-get install dumb-init -y
 
 # Commence le conteneur avec le script de configuration
-ENTRYPOINT [/var/run/wp/wp_config.sh]
+ENTRYPOINT ["/var/run/wp/wp_config.sh"]

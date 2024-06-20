@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Pour s'assurer que le script s'arrete a la premiere erreure
+set -e
+
 # Demarrage de mysql
 service mariadb start;
 
