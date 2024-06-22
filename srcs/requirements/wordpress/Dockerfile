@@ -1,8 +1,10 @@
 FROM debian:bullseye
 
-# Mise a jour du system
-RUN apt-get update -y
-RUN apt-get upgrade -y
+# Configurer debconf pour utiliser l'interface non-interactive
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Update et Upgrade du system
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 
 # Installation de wget pour pouvoir telecharger wordpress
 RUN apt-get install wget -y

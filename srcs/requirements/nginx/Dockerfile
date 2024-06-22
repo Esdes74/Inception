@@ -1,8 +1,10 @@
 FROM debian:bullseye
 
+# Configurer debconf pour utiliser l'interface non-interactive
+ARG DEBIAN_FRONTEND=noninteractive
+
 # Update et Upgrade du system
-RUN apt-get update -y
-RUN apt-get upgrade -y
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 
 # Installation de nginx et vim
 RUN apt-get install nginx -y
@@ -21,7 +23,7 @@ RUN openssl req -x509 -nodes -out /etc/nginx/ssl/inception.crt -keyout /etc/ngin
 RUN mkdir -p /var/run/nginx
 
 # Ajout de la configuration de nginx
-COPY conf/nginx /etc/nginx/nginx.conf
+COPY conf/nginx.conf /etc/nginx/nginx.conf
 
 # Modification des autorisation pour s'assurer qu'on les as
 RUN chmod 755 /var/www/html

@@ -6,10 +6,10 @@ services:
     networks:
       - inception
     build:
-      contexte: ./requirements/mariadb
-    env_file: ~/.env
+      context: ./requirements/mariadb
+    env_file: /.env
     volumes:
-      - mariadb_v:/var/lib/mysql
+      - mariadb:/var/lib/mysql
     restart: on-failure
 
   nginx:
@@ -21,8 +21,8 @@ services:
     depends_on:
       - wordpress
     build:
-      contexte: ./requirements/nginx
-    env_file: ~/.env
+      context: ./requirements/nginx
+    env_file: /.env
     volumes:
       - wordpress:/var/www/html
     restart: on-failure
@@ -34,8 +34,8 @@ services:
     depends_on:
       - mariadb
     build:
-      contexte: ./requirements/wordpress
-    env_file: ~/.env
+      context: ./requirements/wordpress
+    env_file: /.env
     volumes:
       - wordpress:/var/www/html
     restart: on-failure

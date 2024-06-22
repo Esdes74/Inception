@@ -1,8 +1,10 @@
 FROM debian:bullseye
 
+# Configurer debconf pour utiliser l'interface non-interactive
+ARG DEBIAN_FRONTEND=noninteractive
+
 # Update et Upgrade du system
-RUN apt-get update -y
-RUN apt-get upgrade -y
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 
 # Installation de mariadb et vim
 RUN apt-get install mariadb-server mariadb-client -y
