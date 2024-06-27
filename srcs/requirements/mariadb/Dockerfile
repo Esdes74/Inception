@@ -4,10 +4,15 @@ FROM debian:bullseye
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Forcage des donnes pour la commande mariadb
-ARG PASS
-ARG DATABASE
-ARG DATA_USER
-ARG ROOT_PASS
+ARG A_PASS
+ARG A_DATABASE
+ARG A_DATA_USER
+ARG A_ROOT_PASS
+
+ENV PASS=A_PASS
+ENV DATABASE=A_DATABASE
+ENV DATA_USER=A_DATA_USER
+ENV ROOT_PASS=A_ROOT_PASS
 
 # Update et Upgrade du system
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils

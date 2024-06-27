@@ -10,6 +10,9 @@ fclean: stop rm rmi volume_rm builder_rm system_rm network_rm
 stop:
 	sudo docker stop $$(sudo docker ps -aq)										# Arrêter tous les conteneurs en cours d'exécution
 
+down:
+	sudo docker-compose -f ./srcs/docker-compose.yml down
+
 rm:
 	sudo docker rm $$(sudo docker ps -aq)										# Supprimer tous les conteneurs
 rmi:
