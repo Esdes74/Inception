@@ -27,4 +27,4 @@ RUN service mariadb start && mariadb -u root \
 EXPOSE 3306
 
 # Lancement du script de configuration de mariadb
-ENTRYPOINT [ "mysql", "--bind-address=0.0.0.0"]
+ENTRYPOINT [ "mariadbd", "--bind-address=0.0.0.0"]
