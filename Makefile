@@ -1,17 +1,25 @@
-all: 
-	sudo docker-compose -f ./srcs/docker-compose.yml up -d --build
-	
-dir:
-	sudo mkdir -p /home/eslamber/data/mariadb
-	sudo mkdir -p /home/eslamber/data/wordpress
+V_MARIA := /home/eslamber/data/mariadb
+V_WORD := /home/eslamber/data/wordpress
 
-fclean: stop rm rmi volume_rm builder_rm system_rm network_rm
+DOCKER := ./srcs/docker-compose.yml
+
+all: rm_dir dir
+	sudo docker-compose -f $(DOCKER) up -d --build
+	
+rm_dir:
+	sudo rm -rf /home/eslamber/data
+
+dir:
+	sudo mkdir -p $(V_MARIA)
+	sudo mkdir -p $(V_WORD)
+
+fclean: rm rmi volume_rm builder_rm system_rm network_rm
 
 stop:
 	sudo docker stop $$(sudo docker ps -aq)										# Arrêter tous les conteneurs en cours d'exécution
 
 down:
-	sudo docker-compose -f ./srcs/docker-compose.yml down
+	sudo docker-compose -f $(DOCKER) down
 
 rm:
 	sudo docker rm $$(sudo docker ps -aq)										# Supprimer tous les conteneurs
@@ -30,4 +38,4 @@ system_rm:
 network_rm:
 	sudo docker network rm $$(sudo docker network ls | grep -vE 'NETWORK|DRIVER|ID|SERVER|SCOPE|bridge|host|none')	# Supprimer tous les réseaux
 
-.PHONY: all stop rm rmi volume_rm builder_rm system_rm network_rm fclean dir
+.PHONY: all stop rm rmi volume_rm builder_rm system_rm network_rm fclean dir rm_dir down

@@ -17,23 +17,22 @@ ENV ROOT_PASS=A_ROOT_PASS
 # Update et Upgrade du system
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 
+RUN mkdir -p /var/lib/mysql
+RUN chmod -R 777 /var/*
+
 # Installation de mariadb et vim
 RUN apt-get install mariadb-server mariadb-client -y
 
-# Ajuster les permissions sur les répertoires et fichiers de données
-RUN chown -R mysql:mysql /var/lib/mysql \
-    && find /var/lib/mysql -type d -exec chmod 750 {} \; \
-    && find /var/lib/mysql -type f -exec chmod 640 {} \;
-
 RUN service mariadb start && mariadb -e \
  "CREATE DATABASE IF NOT EXISTS ${DATABASE};" \
- -e "CREATE USER IF NOT EXISTS '${DATA_USER}' IDENTIFIED BY '${PASS}';" \
- -e "GRANT ALL PRIVILEGES ON ${DATABASE}.* TO '${DATA_USER}';" \
- -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${PASS}';" \
+ -e "CREATE USER IF NOT EXISTS '${DATA_USER}'@'localhost' IDENTIFIED BY '${PASS}';" \
+ -e "GRANT ALL PRIVILEGES ON ${DATABASE}.* TO '${DATA_USER}'@'wordpress.srcs_inception' IDENTIFIED BY '${PASS}';" \
  -e "FLUSH PRIVILEGES;"
 
+RUN service mariadb stop
+#-e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${PASS}';" \
 # Donne le port 3306
 #EXPOSE 3306
 
 # Lancement du script de configuration de mariadb
-ENTRYPOINT [ "mariadbd", "--bind-address=0.0.0.0"]
+CMD [ "mariadbd", "--bind-address=0.0.0.0"]
