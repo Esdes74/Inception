@@ -1,38 +1,22 @@
 FROM debian:bullseye
 
-# Configurer debconf pour utiliser l'interface non-interactive
-#ARG DEBIAN_FRONTEND=noninteractive
+ARG DATABASE
+ARG DATA_USER
+ARG PASS
+ARG ROOT_PASSWORD
 
-# Forcage des donnes pour la commande mariadb
-ARG A_PASS
-ARG A_DATABASE
-ARG A_DATA_USER
-ARG A_ROOT_PASS
+# Check for packages updates & install mariadb
+RUN apt-get update -y && apt-get upgrade -y && apt-get install mariadb-server -y
 
-ENV PASS=A_PASS
-ENV DATABASE=A_DATABASE
-ENV DATA_USER=A_DATA_USER
-ENV ROOT_PASS=A_ROOT_PASS
+# Launch and create database
+# FLUSH is a refresh to update with the changes done before
+RUN service mariadb start && mariadb -e "GRANT ALL PRIVILEGES ON * . * TO 'root'@'localhost';" \
+&& mariadb -e "FLUSH PRIVILEGES;"
 
-# Update et Upgrade du system
-RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
+RUN service mariadb start && mariadb -e "CREATE DATABASE IF NOT EXISTS ${DATABASE};" \
+&& mariadb -e "CREATE USER IF NOT EXISTS '${DATA_USER}'@'localhost' IDENTIFIED BY '${PASS}';" \
+&& mariadb -e "GRANT ALL PRIVILEGES ON ${DATABASE}.* to '${DATA_USER}'@'%' IDENTIFIED BY '${PASS}';" \
+&& mariadb -e "FLUSH PRIVILEGES;"
 
-RUN mkdir -p /var/lib/mysql
-RUN chmod -R 777 /var/*
-
-# Installation de mariadb et vim
-RUN apt-get install mariadb-server mariadb-client -y
-
-RUN service mariadb start && mariadb -e \
- "CREATE DATABASE IF NOT EXISTS ${DATABASE};" \
- -e "CREATE USER IF NOT EXISTS '${DATA_USER}'@'localhost' IDENTIFIED BY '${PASS}';" \
- -e "GRANT ALL PRIVILEGES ON ${DATABASE}.* TO '${DATA_USER}'@'wordpress.srcs_inception' IDENTIFIED BY '${PASS}';" \
- -e "FLUSH PRIVILEGES;"
-
-RUN service mariadb stop
-#-e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${PASS}';" \
-# Donne le port 3306
-#EXPOSE 3306
-
-# Lancement du script de configuration de mariadb
-CMD [ "mariadbd", "--bind-address=0.0.0.0"]
+# bind 0.0.0.0 allows to listen on every networks
+CMD ["mariadbd", "--bind-address=0.0.0.0"]

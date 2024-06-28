@@ -13,10 +13,11 @@ dir:
 	sudo mkdir -p $(V_MARIA)
 	sudo mkdir -p $(V_WORD)
 
-fclean: rm rmi volume_rm builder_rm system_rm network_rm
+fclean: rmi volume_rm builder_rm system_rm network_rm
 
 stop:
 	sudo docker stop $$(sudo docker ps -aq)										# Arrêter tous les conteneurs en cours d'exécution
+	sudo docker-compose -f $(DOCKER) down
 
 down:
 	sudo docker-compose -f $(DOCKER) down
@@ -38,4 +39,6 @@ system_rm:
 network_rm:
 	sudo docker network rm $$(sudo docker network ls | grep -vE 'NETWORK|DRIVER|ID|SERVER|SCOPE|bridge|host|none')	# Supprimer tous les réseaux
 
-.PHONY: all stop rm rmi volume_rm builder_rm system_rm network_rm fclean dir rm_dir down
+re: rmi volume_rm builder_rm system_rm all
+
+.PHONY: all stop rm rmi volume_rm builder_rm system_rm network_rm fclean dir rm_dir down re
