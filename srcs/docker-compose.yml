@@ -18,7 +18,7 @@ services:
       - mariadb:/var/lib/mysql
     networks:
       - inception
-    restart: unless-stopped
+    restart: on-failure
     expose:
       - "3306"
 

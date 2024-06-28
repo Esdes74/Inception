@@ -1,7 +1,7 @@
 FROM debian:bullseye
 
 # Configurer debconf pour utiliser l'interface non-interactive
-ARG DEBIAN_FRONTEND=noninteractive
+#ARG DEBIAN_FRONTEND=noninteractive
 
 # Forcage des donnes pour la commande mariadb
 ARG A_PASS
@@ -18,18 +18,22 @@ ENV ROOT_PASS=A_ROOT_PASS
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 
 # Installation de mariadb et vim
-RUN apt-get install mariadb-server -y
-# mariadb-client
+RUN apt-get install mariadb-server mariadb-client -y
 
-RUN service mariadb start && mariadb -u root \
-    -e "CREATE DATABASE IF NOT EXISTS ${DATABASE};" \
-    -e "CREATE USER IF NOT EXISTS '${DATA_USER}' IDENTIFIED BY '${PASS}';" \
-    -e "GRANT ALL PRIVILEGES ON ${DATABASE}.* TO '${DATA_USER}';" \
-    -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${PASS}';" \
-    -e "FLUSH PRIVILEGES;"
+# Ajuster les permissions sur les répertoires et fichiers de données
+RUN chown -R mysql:mysql /var/lib/mysql \
+    && find /var/lib/mysql -type d -exec chmod 750 {} \; \
+    && find /var/lib/mysql -type f -exec chmod 640 {} \;
+
+RUN service mariadb start && mariadb -e \
+ "CREATE DATABASE IF NOT EXISTS ${DATABASE};" \
+ -e "CREATE USER IF NOT EXISTS '${DATA_USER}' IDENTIFIED BY '${PASS}';" \
+ -e "GRANT ALL PRIVILEGES ON ${DATABASE}.* TO '${DATA_USER}';" \
+ -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${PASS}';" \
+ -e "FLUSH PRIVILEGES;"
 
 # Donne le port 3306
-EXPOSE 3306
+#EXPOSE 3306
 
 # Lancement du script de configuration de mariadb
 ENTRYPOINT [ "mariadbd", "--bind-address=0.0.0.0"]
