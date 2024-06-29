@@ -3,7 +3,7 @@ V_WORD := /home/eslamber/data/wordpress
 
 DOCKER := ./srcs/docker-compose.yml
 
-all: rm_dir dir
+all: dir
 	sudo docker-compose -f $(DOCKER) up -d --build
 	
 rm_dir:
@@ -13,7 +13,7 @@ dir:
 	sudo mkdir -p $(V_MARIA)
 	sudo mkdir -p $(V_WORD)
 
-fclean: rmi volume_rm builder_rm system_rm network_rm
+fclean: rmi volume_rm builder_rm system_rm rm_dir network_rm
 
 stop:
 	sudo docker stop $$(sudo docker ps -aq)										# Arrêter tous les conteneurs en cours d'exécution
@@ -39,6 +39,6 @@ system_rm:
 network_rm:
 	sudo docker network rm $$(sudo docker network ls | grep -vE 'NETWORK|DRIVER|ID|SERVER|SCOPE|bridge|host|none')	# Supprimer tous les réseaux
 
-re: rmi volume_rm builder_rm system_rm all
+re: rmi volume_rm builder_rm system_rm rm_dir all
 
 .PHONY: all stop rm rmi volume_rm builder_rm system_rm network_rm fclean dir rm_dir down re

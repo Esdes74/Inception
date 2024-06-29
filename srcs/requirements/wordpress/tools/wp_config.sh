@@ -3,11 +3,9 @@
 # Pour s'assurer que le script s'arrete a la premiere erreure
 set -e
 
-# Afin d'etre sur que tous soit bien installé
-until mysqladmin ping -hmariadb --silent; do
-	echo Waiting for mariadb...
-	sleep 2
-done
+# Attends 5 secondes pour que mariadb soit bien configuree
+# pas de boucle until car cree un warning dans le log de mariadb
+sleep 5
 
 #if ! wp core is-installed --path=${INSTAL_WP}; then
 if [ ! -f /var/www/html/wp-config.php ]; then

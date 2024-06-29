@@ -3,6 +3,7 @@ version: '3.8'
 services:
   mariadb:
     container_name: mariadb
+    image: mariadb
     env_file:
       - .env
     build:
@@ -24,9 +25,12 @@ services:
 
   nginx:
     container_name: nginx
+    image: nginx
     env_file: .env
     ports:
       - "443:443"
+    expose:
+      - "443"
     networks:
       - inception
     depends_on:
@@ -39,6 +43,7 @@ services:
 
   wordpress:
     container_name: wordpress
+    image: wordpress
     env_file: .env
     networks:
       - inception
@@ -49,6 +54,8 @@ services:
     volumes:
       - wordpress:/var/www/html
     restart: on-failure
+    expose:
+      - "9000"
 
 volumes:
   wordpress:
@@ -68,4 +75,5 @@ volumes:
 
 networks:
   inception:
+    name: inception
     driver: bridge

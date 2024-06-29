@@ -16,7 +16,7 @@ RUN mkdir -p /etc/nginx/ssl
 RUN apt-get install openssl -y
 
 # Creation de la clee et du certificat
-RUN openssl req -x509 -newkey rsa:2048 -nodes -out /etc/nginx/ssl/inception.crt -keyout /etc/nginx/ssl/inception.key -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=eslamber.42.fr/UID=eslamber"
+RUN openssl req -x509 -newkey rsa:2048 -nodes -out /etc/nginx/ssl/inception.crt -keyout /etc/nginx/ssl/inception.key -subj "/C=FR/ST=AURA/L=Lyon/O=42/OU=42/CN=eslamber.42.fr/UID=eslamber"
 
 # Ajout de la configuration de nginx
 COPY conf/nginx.conf /etc/nginx/sites-available/eslamber.42.fr.conf
