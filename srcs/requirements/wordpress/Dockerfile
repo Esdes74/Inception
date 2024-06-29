@@ -23,7 +23,7 @@ RUN mv wp-cli.phar /usr/local/bin/wp
 RUN mkdir -p /var/www/html
 
 # Copie de la configuration de php
-COPY conf/wp.conf /etc/php/7.4/fpm/pool/www.conf
+COPY conf/wp.conf /etc/php/7.4/fpm/pool.d/www.conf
 
 # Creation du repertoire dans lequel sera installe wordpress
 #RUN mkdir -p /var/www
